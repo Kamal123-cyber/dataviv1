@@ -16,13 +16,19 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+
+#<---------------------------------------------------------------------->
 SECRET_KEY = "123"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+#<---------------------------------------------------------------------->
 
+
+
+#<---------------------------------------------------------------------->
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -30,6 +36,11 @@ class User(Base):
     password = Column(String)
 
 Base.metadata.create_all(bind=engine)
+#<---------------------------------------------------------------------->
+
+
+
+#<---------------------------------------------------------------------->
 
 class UserCreate(BaseModel):
     username: str
@@ -45,6 +56,10 @@ def get_db():
         yield db
     finally:
         db.close()
+#<---------------------------------------------------------------------->
+
+
+#<---------------------------------------------------------------------->
 
 def create_token(data: dict, expires_delta: int):
     expire = datetime.utcnow() + timedelta(minutes=expires_delta)
@@ -56,7 +71,10 @@ def verify_token(token: str):
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except JWTError:
         return None
+#<---------------------------------------------------------------------->
 
+
+#<---------------------------------------------------------------------->
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 class AuthAPI:
@@ -106,3 +124,4 @@ class AuthAPI:
             raise HTTPException(status_code=401, detail="Invalid token")
 
 app.include_router(router)
+#<---------------------------------------------------------------------->
