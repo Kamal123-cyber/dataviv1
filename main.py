@@ -32,8 +32,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    password = Column(String)
+    username = Column(String(255), unique=True, index=True)
+    password = Column(String(255))
+    first_name = Column(String(255))  # Added first_name
+    last_name = Column(String(255))   # Added last_name
 
 Base.metadata.create_all(bind=engine)
 #<---------------------------------------------------------------------->
@@ -45,6 +47,8 @@ Base.metadata.create_all(bind=engine)
 class UserCreate(BaseModel):
     username: str
     password: str
+    first_name: str
+    last_name: str
 
 class UserLogin(BaseModel):
     username: str
@@ -86,7 +90,12 @@ class AuthAPI:
             raise HTTPException(status_code=400, detail="Username already taken")
 
         hashed_password = pwd_context.hash(user.password)
-        new_user = User(username=user.username, password=hashed_password)
+        new_user = User(
+            username=user.username,
+            password=hashed_password,
+            first_name=user.first_name,
+            last_name=user.last_name
+        )
         db.add(new_user)
         db.commit()
         return {"message": "User registered successfully"}
@@ -118,7 +127,7 @@ class AuthAPI:
             user = db.query(User).filter(User.username == username).first()
             if not user:
                 raise HTTPException(status_code=401, detail="User not found")
-            return {"id": user.id, "username": user.username}
+            return {"id": user.id, "username": user.username, "first_name": user.first_name, "last_name": user.last_name}
 
         except JWTError:
             raise HTTPException(status_code=401, detail="Invalid token")
