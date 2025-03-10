@@ -10,6 +10,7 @@ from pydantic import BaseModel
 app = FastAPI()
 
 DATABASE_URL = "sqlite:///./test.db"
+# DATABASE_URL = "mysql+pymysql://{root}:{Maurya@1998}@localhost:3306/{dataviv}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -8,3 +8,4 @@ for this project to run
     1. for creating user or register 8001/auth/register POST
    2. for loging in user 8001/auth/login POST
    3. for getting user details 8000/auth/user-details GET
+   4. use 8001/docs for api's details 
